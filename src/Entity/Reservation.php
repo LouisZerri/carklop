@@ -24,7 +24,7 @@ class Reservation
     private ?User $user = null;
 
     #[ORM\Column]
-    private ?int $sieges = null;
+    private ?int $seats = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
@@ -69,14 +69,14 @@ class Reservation
         return $this;
     }
 
-    public function getSieges(): ?int
+    public function getSeats(): ?int
     {
-        return $this->sieges;
+        return $this->seats;
     }
 
-    public function setSieges(int $sieges): static
+    public function setSeats(int $seats): static
     {
-        $this->sieges = $sieges;
+        $this->seats = $seats;
 
         return $this;
     }

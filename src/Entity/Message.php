@@ -16,7 +16,7 @@ class Message
 
     #[ORM\ManyToOne(inversedBy: 'messages')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $envoyeur = null;
+    private ?User $sender = null;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
@@ -36,14 +36,14 @@ class Message
         return $this->id;
     }
 
-    public function getEnvoyeur(): ?User
+    public function getSender(): ?User
     {
-        return $this->envoyeur;
+        return $this->sender;
     }
 
-    public function setEnvoyeur(?User $envoyeur): static
+    public function setSender(?User $sender): static
     {
-        $this->envoyeur = $envoyeur;
+        $this->sender = $sender;
 
         return $this;
     }

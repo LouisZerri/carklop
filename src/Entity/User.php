@@ -9,6 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
@@ -20,6 +21,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+    #[Assert\NotBlank]
+    #[Assert\Email(message: "L'adresse email est invalide.")]
     private ?string $email = null;
 
     /**
@@ -32,31 +35,44 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 8, minMessage: "Le mot de passe doit contenir au moins 8 caractères.")]
+    #[Assert\Regex(pattern: "/[A-Z]/", message: "Le mot de passe doit contenir au moins une majuscule.")]
+    #[Assert\Regex(pattern: "/\d/", message: "Le mot de passe doit contenir au moins un chiffre.")]
+    #[Assert\Regex(pattern: "/[^A-Za-z0-9]/", message: "Le mot de passe doit contenir un caractère spécial.")]
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $nom = null;
+    private ?string $lastname = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $prenom = null;
+    private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $tel = null;
+    #[Assert\NotBlank]
+    #[Assert\Regex(
+        pattern: "/^0[1-9](\d{8})$/",
+        message: "Le numéro de téléphone doit être valide (format FR)."
+    )]
+    private ?string $phone = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $date_de_naissance = null;
+    #[Assert\NotBlank]
+    #[Assert\Type(type: \DateTimeInterface::class, message: "La date doit être valide.")]
+    #[Assert\LessThanOrEqual("-18 years", message: "Vous devez avoir au moins 18 ans.")]
+    private ?\DateTime $date_of_birth = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $photo = null;
+    private ?string $picture = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $bio = null;
 
     #[ORM\Column(nullable: true)]
-    private ?bool $musique = null;
+    private ?bool $music = null;
 
     #[ORM\Column(nullable: true)]
-    private ?bool $animaux = null;
+    private ?bool $animal = null;
 
     #[ORM\Column(nullable: true)]
     private ?bool $discussion = null;
@@ -67,11 +83,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $reset_token = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $resetTokenExpiresAt = null;
+
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $remember_token = null;
 
     #[ORM\Column(length: 50, nullable: true)]
-    private ?string $voiture = null;
+    private ?string $car = null;
 
     #[ORM\Column(nullable: true)]
     private ?bool $isVerified = null;
@@ -191,7 +210,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __serialize(): array
     {
         $data = (array) $this;
-        $data["\0".self::class."\0password"] = hash('crc32c', $this->password);
+        $data["\0" . self::class . "\0password"] = hash('crc32c', $this->password);
 
         return $data;
     }
@@ -202,62 +221,62 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // @deprecated, to be removed when upgrading to Symfony 8
     }
 
-    public function getNom(): ?string
+    public function getLastname(): ?string
     {
-        return $this->nom;
+        return $this->lastname;
     }
 
-    public function setNom(string $nom): static
+    public function setLastname(string $lastname): static
     {
-        $this->nom = $nom;
+        $this->lastname = $lastname;
 
         return $this;
     }
 
-    public function getPrenom(): ?string
+    public function getFirstname(): ?string
     {
-        return $this->prenom;
+        return $this->firstname;
     }
 
-    public function setPrenom(string $prenom): static
+    public function setFirstname(string $firstname): static
     {
-        $this->prenom = $prenom;
+        $this->firstname = $firstname;
 
         return $this;
     }
 
-    public function getTel(): ?string
+    public function getPhone(): ?string
     {
-        return $this->tel;
+        return $this->phone;
     }
 
-    public function setTel(string $tel): static
+    public function setPhone(string $phone): static
     {
-        $this->tel = $tel;
+        $this->phone = $phone;
 
         return $this;
     }
 
-    public function getDateDeNaissance(): ?\DateTime
+    public function getDateOfBirth(): ?\DateTime
     {
-        return $this->date_de_naissance;
+        return $this->date_of_birth;
     }
 
-    public function setDateDeNaissance(\DateTime $date_de_naissance): static
+    public function setDateOfBirth(\DateTime $date_of_birth): static
     {
-        $this->date_de_naissance = $date_de_naissance;
+        $this->date_of_birth = $date_of_birth;
 
         return $this;
     }
 
-    public function getPhoto(): ?string
+    public function getPicture(): ?string
     {
-        return $this->photo;
+        return $this->picture;
     }
 
-    public function setPhoto(string $photo): static
+    public function setPicture(string $picture): static
     {
-        $this->photo = $photo;
+        $this->picture = $picture;
 
         return $this;
     }
@@ -274,26 +293,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function isMusique(): ?bool
+    public function isMusic(): ?bool
     {
-        return $this->musique;
+        return $this->music;
     }
 
-    public function setMusique(?bool $musique): static
+    public function setMusic(?bool $music): static
     {
-        $this->musique = $musique;
+        $this->music = $music;
 
         return $this;
     }
 
-    public function isAnimaux(): ?bool
+    public function isAnimal(): ?bool
     {
-        return $this->animaux;
+        return $this->animal;
     }
 
-    public function setAnimaux(?bool $animaux): static
+    public function setAnimal(?bool $animal): static
     {
-        $this->animaux = $animaux;
+        $this->animal = $animal;
 
         return $this;
     }
@@ -334,6 +353,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getResetTokenExpiresAt(): ?\DateTimeInterface
+    {
+        return $this->resetTokenExpiresAt;
+    }
+
+    public function setResetTokenExpiresAt(?\DateTimeInterface $expiresAt): static
+    {
+        $this->resetTokenExpiresAt = $expiresAt;
+        return $this;
+    }
+
+
     public function getRememberToken(): ?string
     {
         return $this->remember_token;
@@ -346,14 +377,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getVoiture(): ?string
+    public function getCar(): ?string
     {
-        return $this->voiture;
+        return $this->car;
     }
 
-    public function setVoiture(?string $voiture): static
+    public function setCar(?string $car): static
     {
-        $this->voiture = $voiture;
+        $this->car = $car;
 
         return $this;
     }
@@ -478,7 +509,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->messages->contains($message)) {
             $this->messages->add($message);
-            $message->setEnvoyeur($this);
+            $message->setSender($this);
         }
 
         return $this;
@@ -488,8 +519,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->messages->removeElement($message)) {
             // set the owning side to null (unless already changed)
-            if ($message->getEnvoyeur() === $this) {
-                $message->setEnvoyeur(null);
+            if ($message->getSender() === $this) {
+                $message->setSender(null);
             }
         }
 

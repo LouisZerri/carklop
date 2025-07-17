@@ -17,28 +17,28 @@ class Trip
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $depart = null;
+    private ?string $departure = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $arrivee = null;
+    private ?string $arrival = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $date = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE)]
-    private ?\DateTime $heure = null;
+    private ?\DateTime $hour = null;
 
     #[ORM\Column]
-    private ?int $sieges = null;
+    private ?int $seats = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 6, scale: 2)]
-    private ?string $prix = null;
+    private ?string $price = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
     #[ORM\Column]
-    private ?int $temps = null;
+    private ?int $time = null;
 
     #[ORM\ManyToOne(inversedBy: 'trips')]
     #[ORM\JoinColumn(nullable: false)]
@@ -60,26 +60,26 @@ class Trip
         return $this->id;
     }
 
-    public function getDepart(): ?string
+    public function getDeparture(): ?string
     {
-        return $this->depart;
+        return $this->departure;
     }
 
-    public function setDepart(string $depart): static
+    public function setDeparture(string $departure): static
     {
-        $this->depart = $depart;
+        $this->departure = $departure;
 
         return $this;
     }
 
-    public function getArrivee(): ?string
+    public function getArrival(): ?string
     {
-        return $this->arrivee;
+        return $this->arrival;
     }
 
-    public function setArrivee(string $arrivee): static
+    public function setArrival(string $arrival): static
     {
-        $this->arrivee = $arrivee;
+        $this->arrival = $arrival;
 
         return $this;
     }
@@ -96,38 +96,38 @@ class Trip
         return $this;
     }
 
-    public function getHeure(): ?\DateTime
+    public function getHour(): ?\DateTime
     {
-        return $this->heure;
+        return $this->hour;
     }
 
-    public function setHeure(\DateTime $heure): static
+    public function setHour(\DateTime $hour): static
     {
-        $this->heure = $heure;
+        $this->hour = $hour;
 
         return $this;
     }
 
-    public function getSieges(): ?int
+    public function getSeats(): ?int
     {
-        return $this->sieges;
+        return $this->seats;
     }
 
-    public function setSieges(int $sieges): static
+    public function setSeats(int $seats): static
     {
-        $this->sieges = $sieges;
+        $this->seats = $seats;
 
         return $this;
     }
 
-    public function getPrix(): ?string
+    public function getPrice(): ?string
     {
-        return $this->prix;
+        return $this->price;
     }
 
-    public function setPrix(string $prix): static
+    public function setPrice(string $price): static
     {
-        $this->prix = $prix;
+        $this->price = $price;
 
         return $this;
     }
@@ -144,14 +144,14 @@ class Trip
         return $this;
     }
 
-    public function getTemps(): ?int
+    public function getTime(): ?int
     {
-        return $this->temps;
+        return $this->time;
     }
 
-    public function setTemps(int $temps): static
+    public function setTime(int $time): static
     {
-        $this->temps = $temps;
+        $this->time = $time;
 
         return $this;
     }
@@ -200,16 +200,16 @@ class Trip
 
     public function getEndAt(): ?\DateTimeInterface
     {
-        if (!$this->date || !$this->heure || !$this->temps) {
+        if (!$this->date || !$this->hour || !$this->time) {
             return null;
         }
 
         // Combine date + time en DateTime
         $start = new \DateTimeImmutable(
-            $this->date->format('Y-m-d') . ' ' . $this->heure->format('H:i:s')
+            $this->date->format('Y-m-d') . ' ' . $this->hour->format('H:i:s')
         );
 
         // Ajoute la durée du trajet
-        return $start->add(new \DateInterval('PT' . $this->temps . 'M'));
+        return $start->add(new \DateInterval('PT' . $this->time . 'M'));
     }
 }

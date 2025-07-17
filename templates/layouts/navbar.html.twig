@@ -1,9 +1,66 @@
 <nav class="bg-white shadow py-5">
-    <div class="flex items-center justify-between px-4">
-        <a href="/" class="text-2xl font-bold text-[#e67e22]"><i class="fa-solid fa-car-side"></i> Carklop</a>
-        <div class="space-x-4">
-            <a href="/login" class="px-4 py-2 gap-2 text-gray-700 hover:text-[#e67e22] transition-colors"><i class="fa-solid fa-arrow-right-to-bracket"></i> Connexion</a>
-            <a href="/register" class="px-4 py-2 gap-2 text-white bg-[#e67e22] rounded-md text-center hover:bg-orange-600 transition-colors"><i class="fa-solid fa-user-plus"></i> Inscription</a>
-        </div>
-    </div>
+	<div class="flex items-center justify-between px-4">
+		<a href="#" class="text-2xl font-bold text-[#e67e22]">
+			<i class="fa-solid fa-car-side"></i>
+			Carklop
+		</a>
+
+		<div class="space-x-4 flex items-center relative">
+			{% if app.user %}
+				<a href="{{ (app.user.isVerified and app.user.isLicenseVerified) ? '#' : 'javascript:void(0)' }}" class="flex items-center gap-2 px-4 py-2 rounded-md transition-colors -my-2
+										            {{ (app.user.isVerified and app.user.isLicenseVerified)
+										                ? 'bg-[#e67e22] text-white hover:bg-orange-600'
+										                : 'bg-gray-300 text-gray-600 cursor-not-allowed' }}" {% if not (app.user.isVerified and app.user.isLicenseVerified) %} aria-disabled="true" {% endif %}>
+					<i class="fa-solid fa-plus"></i>
+					<span>Publier un trajet</span>
+				</a>
+
+				<div class="relative">
+					<button type="button" onclick="toggleDropdown()" class="flex items-center gap-2 text-gray-700 hover:text-[#e67e22] transition-colors focus:outline-none">
+						<img src="{{ app.user.picture ?? 'https://ui-avatars.com/api/?name=Utilisateur' }}" alt="Avatar" class="w-11 h-11 -my-2 rounded-full object-cover border"/>
+						<i class="fa-solid fa-chevron-down text-sm"></i>
+					</button>
+
+					<div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-52 bg-white border border-gray-100 rounded-lg shadow-lg z-50">
+						<div class="px-4 py-2 border-b text-sm text-gray-800 font-medium">
+							{{ app.user.email }}
+						</div>
+						<a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+							<i class="fa-solid fa-user mr-2"></i>
+							Profil
+						</a>
+						<a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+							<i class="fa-solid fa-car mr-2"></i>
+							Mes trajets
+						</a>
+						<a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+							<i class="fa-solid fa-calendar-check mr-2"></i>
+							Réservations
+						</a>
+
+						{% if 'ROLE_ADMIN' in app.user.roles %}
+							<a href="#" class="block px-4 py-2 text-sm text-orange-700 hover:bg-orange-50">
+								<i class="fa-solid fa-shield-halved mr-2"></i>
+								Admin
+							</a>
+						{% endif %}
+
+						<a href="{{ path('app_logout') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+							<i class="fa-solid fa-arrow-right-from-bracket mr-2"></i>
+							Déconnexion
+						</a>
+					</div>
+				</div>
+			{% else %}
+				<a href="{{ path("app_login") }}" class="px-4 py-2 text-gray-700 hover:text-[#e67e22] transition-colors">
+					<i class="fa-solid fa-arrow-right-to-bracket"></i>
+					Connexion
+				</a>
+				<a href="{{ path("app_register") }}" class="px-4 py-2 text-white bg-[#e67e22] rounded-md hover:bg-orange-600 transition-colors">
+					<i class="fa-solid fa-user-plus"></i>
+					Inscription
+				</a>
+			{% endif %}
+		</div>
+	</div>
 </nav>
