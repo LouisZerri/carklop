@@ -1,6 +1,6 @@
 <nav class="bg-white shadow py-5">
 	<div class="flex items-center justify-between px-4">
-		<a href="#" class="text-2xl font-bold text-[#e67e22]">
+		<a href="/" class="text-2xl font-bold text-[#e67e22]">
 			<i class="fa-solid fa-car-side"></i>
 			Carklop
 		</a>
@@ -25,25 +25,24 @@
 						<div class="px-4 py-2 border-b text-sm text-gray-800 font-medium">
 							{{ app.user.email }}
 						</div>
+                        {% if 'ROLE_ADMIN' in app.user.roles %}
+							<a href="#" class="block px-4 py-2 text-sm text-orange-700 hover:bg-orange-50">
+								<i class="fa-solid fa-shield-halved mr-2"></i>
+								Espace admin
+							</a>
+						{% endif %}
 						<a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
 							<i class="fa-solid fa-user mr-2"></i>
 							Profil
 						</a>
 						<a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
 							<i class="fa-solid fa-car mr-2"></i>
-							Mes trajets
+							Mes trajets publiés
 						</a>
 						<a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
 							<i class="fa-solid fa-calendar-check mr-2"></i>
-							Réservations
+							Mes réservations
 						</a>
-
-						{% if 'ROLE_ADMIN' in app.user.roles %}
-							<a href="#" class="block px-4 py-2 text-sm text-orange-700 hover:bg-orange-50">
-								<i class="fa-solid fa-shield-halved mr-2"></i>
-								Admin
-							</a>
-						{% endif %}
 
 						<a href="{{ path('app_logout') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
 							<i class="fa-solid fa-arrow-right-from-bracket mr-2"></i>
